@@ -52,9 +52,16 @@ const App = () => {
   const [bad, setBad] = useState(0)
   const [statisticsState, setStatisticsState] = useState(false)
 
-  const click = setState => () => {
-    setState(prev => prev + 1)
-    setStatisticsState(true)
+  // const click = setState => () => {
+  //   setState(prev => prev + 1)
+  //   setStatisticsState(true)
+  // }
+  function click(setState){
+    function final (){
+      setState(prev=>prev+1)
+      setStatisticsState(true)
+    }
+    return final
   }
 
   const all = good + bad + neutral
