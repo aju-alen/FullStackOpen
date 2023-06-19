@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import axios from 'axios'
 import phoneBookServices from './services/phoneBook'
 
 
@@ -29,7 +28,7 @@ const App = () => {
      phoneBookServices.createPhoneBookData(newObj)
       .then(response=>{
         setPersons(prev => [...prev, response])
-      })
+      }).catch(error=>{console.log(error.message)})
     }
     else {
       let message = `${newObj.name} is already added to phonebook, relace the old number with the new number`
@@ -39,7 +38,7 @@ const App = () => {
          phoneBookServices.updateRecord(id, newObj)
          .then(data=>{
           setPersons(persons.map(obj=>obj.id !== data.id? obj : data))
-         })
+         }).catch(error=>console.log(error.message))
       }
     }
     setNewName('')
@@ -49,6 +48,8 @@ const App = () => {
 const axiosData=()=>{
   phoneBookServices.getPhoneBookData().then(response=>{
     setPersons(response)
+  }).catch(error=>{
+    console.log(error.message)
   })
 }
 
