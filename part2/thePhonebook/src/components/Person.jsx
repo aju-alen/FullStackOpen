@@ -1,8 +1,15 @@
 import React from 'react'
 
-const Person = ({data}) => {
+const Person = ({ data, deleteModal }) => {
+
+
   return (
-    <p key={data.name}>{data.name} {data.number}</p>
+    <div>
+      <p >
+        {data.name} {data.number}
+        <button onClick={deleteModal}>Delete</button>
+      </p>
+    </div>
   )
 }
 

@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import axios from 'axios'
+import phoneBookServices from './services/phoneBook'
 
 
 const App = () => {
@@ -25,19 +26,37 @@ const App = () => {
       number: phoneNo
     }
     if (persons.findIndex(obj => obj.name.toLowerCase() === newObj.name.toLowerCase()) === -1) {
-      setPersons(prev => [...prev, newObj])
+     phoneBookServices.createPhoneBookData(newObj)
+      .then(response=>{
+        setPersons(prev => [...prev, response])
+      })
     }
     else {
-      alert(`${newObj.name} is already added to phonebook`)
+      let message = `${newObj.name} is already added to phonebook, relace the old number with the new number`
+      if(confirm(message)){
+         const obj = persons.filter(obj => obj.name.toLowerCase() === newObj.name.toLowerCase()) 
+         const id = obj[0].id 
+         phoneBookServices.updateRecord(id, newObj)
+         .then(data=>{
+          setPersons(persons.map(obj=>obj.id !== data.id? obj : data))
+         })
+      }
     }
     setNewName('')
     setPhoneNo('')
   }
+
 const axiosData=()=>{
-  axios.get(` http://localhost:3001/persons`)
-  .then(response=>{
-    setPersons(response.data)
+  phoneBookServices.getPhoneBookData().then(response=>{
+    setPersons(response)
   })
+}
+
+const deleteModal = (id, name) => {
+  if (confirm(`Delete ${name} of id ${id} `)) {
+    phoneBookServices.deleteRecord(id).then()
+  }
+  setPersons(prev => prev.filter(obj => obj.id !== id))
 }
 
 
@@ -50,7 +69,7 @@ const axiosData=()=>{
       <PersonForm handleSubmit={handleSubmit} newName={newName}setNewName={setNewName} phoneNo={phoneNo} setPhoneNo={setPhoneNo}/>
       <h2>Numbers</h2>
       
-      <Persons persons={persons} search={search} />
+      <Persons deleteModal={deleteModal} setPersons={setPersons} persons={persons} search={search} />
     </div>
   )
 }
