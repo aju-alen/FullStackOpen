@@ -27,10 +27,11 @@ const App = () => {
       name: newName.charAt(0).toUpperCase() + newName.slice(1),
       number: phoneNo
     }
-    if (persons.findIndex(obj => obj.name.toLowerCase() === newObj.name.toLowerCase()) === -1) {
+    if (persons.findIndex(obj => obj.name?.toLowerCase() === newObj.name.toLowerCase()) === -1) {
       phoneBookServices.createPhoneBookData(newObj)
         .then(response => {
           setPersons(prev => [...prev, response])
+          
         }).catch(error => { console.log(error.message) })
       setErrorNotification(false)
       setCreateNotification(`Added ${newObj.name}`)
@@ -45,6 +46,7 @@ const App = () => {
         const id = obj[0].id
         phoneBookServices.updateRecord(id, newObj)
           .then(data => {
+            axiosData()
             setPersons(persons.map(obj => obj.id !== data.id ? obj : data))
           }).catch(error => {
             setErrorNotification(true)
